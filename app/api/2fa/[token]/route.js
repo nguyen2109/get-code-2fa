@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "./../../../../utils/database";
+import { connectToDB } from "@/utils/database";
 import Statics2fa from "@/models/2fa";
+import mongoose from "mongoose";
 
 export async function GET(req, { params }) {
   const code = params.token;
@@ -15,12 +16,22 @@ export async function GET(req, { params }) {
 }
 export async function POST(req) {
   const { code } = await req.json();
+
   try {
     // Kết nối đến MongoDB
     await connectToDB();
     await Statics2fa.create({ code });
     return NextResponse.json({ msg: "Success" });
   } catch (error) {
-    return NextResponse.json({ error: error });
+    let errorList = [];
+    if (error instanceof mongoose.Error.ValidationError) {
+      console.log(true);
+
+      for (let e in error.errors) {
+        errorList.push(error.errors[e].message);
+      }
+    }
+    console.log(errorList);
+    return NextResponse.json({ error: errorList });
   }
 }
