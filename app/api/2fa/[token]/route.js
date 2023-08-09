@@ -21,6 +21,6 @@ export async function POST(req) {
     await Statics2fa.create({ code });
     return NextResponse.json({ msg: "Success" });
   } catch (error) {
-    console.log(error);
+    return NextResponse.json({ error: error });
   }
 }
