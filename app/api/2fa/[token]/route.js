@@ -25,13 +25,10 @@ export async function POST(req) {
   } catch (error) {
     let errorList = [];
     if (error instanceof mongoose.Error.ValidationError) {
-      console.log(true);
-
       for (let e in error.errors) {
         errorList.push(error.errors[e].message);
       }
     }
-    console.log(errorList);
     return NextResponse.json({ error: errorList });
   }
 }
