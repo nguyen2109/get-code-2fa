@@ -20,9 +20,7 @@ export default function Server() {
 
     for (const line of lines) {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/2fa/${encodeURIComponent(line)}`
-        );
+        const response = await fetch(`/api/2fa/${encodeURIComponent(line)}`);
         if (response.ok) {
           const data = await response.json();
           results.push(data);
