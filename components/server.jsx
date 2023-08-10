@@ -9,7 +9,7 @@ export default function Server() {
   const [jsonResults, setJsonResults] = useState([]);
   const [input, setInput] = useState([]);
 
-  const toggleHidden = async () => {
+  const getCode = async () => {
     const lines = textareaValue
       .split("\n")
       .map((line) => line.trim())
@@ -99,7 +99,7 @@ export default function Server() {
             onChange={(e) => setTextareaValue(e.target.value)}
           ></textarea>
           <button
-            onClick={toggleHidden}
+            onClick={getCode}
             class="my-4 rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
           >
             GET CODE
