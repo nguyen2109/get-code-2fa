@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
-import { useUserIp } from "@/utils/useUserIp";
+import { useUserIp } from "./../utils/useUserIp";
 
 export default function Server() {
   const ip = useUserIp();

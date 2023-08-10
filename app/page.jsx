@@ -1,4 +1,4 @@
-import Server from "@/components/server.jsx";
+import Server from "./../components/server";
 
 const Page = () => {
   return (
