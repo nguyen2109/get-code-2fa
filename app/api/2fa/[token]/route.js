@@ -14,9 +14,8 @@ export async function GET(req, { params }) {
 
   return NextResponse.json(data);
 }
-export async function POST(req) {
-  const { code } = await req.json();
-
+export async function POST(req, { params }) {
+  const code = params.token;
   try {
     // Kết nối đến MongoDB
     await connectToDB();

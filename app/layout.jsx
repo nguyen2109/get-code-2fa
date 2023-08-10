@@ -1,8 +1,8 @@
 import "./../styles/global.css";
-
+import Providers from "./Providers";
 export const metadata = {
-  title: "Github API User",
-  description: "Github API User",
+  title: "Get 2FA Code",
+  description: "Get 2FA Code",
 };
 const RootLayout = ({ children }) => {
   return (
@@ -12,7 +12,9 @@ const RootLayout = ({ children }) => {
           <div className="gradient"></div>
         </div>
 
-        <main className="appx">{children}</main>
+        <main className="app">
+          <Providers>{children} </Providers>
+        </main>
       </body>
     </html>
   );
