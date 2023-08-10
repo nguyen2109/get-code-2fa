@@ -5,9 +5,36 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Server() {
-  const [isHidden, setIsHidden] = useState(true);
-  const toggleHidden = () => {
-    setIsHidden(!isHidden);
+  const [textareaValue, setTextareaValue] = useState("");
+  const [jsonResults, setJsonResults] = useState([]);
+  const [input, setInput] = useState([]);
+
+  const toggleHidden = async () => {
+    const lines = textareaValue
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line !== "");
+    setInput(lines);
+    console.log(lines);
+    const results = [];
+
+    for (const line of lines) {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/2fa/${encodeURIComponent(line)}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          results.push(data);
+        } else {
+          console.error("Request failed:", response.status);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    }
+
+    setJsonResults(results);
   };
 
   const { theme, setTheme } = useTheme();
@@ -68,6 +95,8 @@ export default function Server() {
           <textarea
             class="border-nonemt-1 block w-full rounded-md border border-gray-300 bg-slate-100 py-4 ring-0 dark:bg-slate-500"
             rows="8"
+            value={textareaValue}
+            onChange={(e) => setTextareaValue(e.target.value)}
           ></textarea>
           <button
             onClick={toggleHidden}
@@ -78,36 +107,39 @@ export default function Server() {
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 sm:space-x-4">
-          <div class="col-span-2">
-            <div class="m-4 mx-auto items-center rounded-xl bg-white p-2  shadow-lg dark:bg-slate-700">
-              <div class="grid grid-cols-4">
-                <div class="justify-start truncate ">7cng 7luq lhdm 5qjp</div>
-                <div className="ml-auto">
-                  <span className=" dark:text-white text-green-800 bg-green-200 text-sm font-medium rounded-lg bg-opacity-50 p-1.5">
-                    123456
-                  </span>
-                </div>
-                <div className="col-span-2 ml-auto">
-                  <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
-                    Get QR
-                  </button>
-                  <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
-                    Copy
-                  </button>
+          <div className="col-span-2">
+            {jsonResults.map((result, index) => (
+              <div
+                key={index}
+                className=" m-4 mx-auto items-center rounded-xl bg-white p-2  shadow-lg dark:bg-slate-700"
+              >
+                <div className="grid grid-cols-4">
+                  <div className="justify-start truncate">{input[index]}</div>
+                  <div className="ml-auto">
+                    <span className="dark:text-white text-green-800 bg-green-200 text-sm font-medium rounded-lg bg-opacity-50 p-1.5">
+                      {result ? result.token : "ERROR"}
+                    </span>
+                  </div>
+                  <div className="col-span-2 ml-auto">
+                    <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
+                      Get QR
+                    </button>
+                    <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
+                      Copy
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-
-          {/* <div class="col-span-3 hidden"> Nếu col-span-2 được hidden thì thuộc tính này sẽ đc kích hoạt */}
           <div>
             <div class="m-4 mx-auto rounded-xl bg-white p-2 shadow-lg dark:bg-slate-700">
               <div class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
                 <h1 class="text-2xl font-bold ">QR CODE</h1>
               </div>
               QR Code is empty! You need to click on button
-              <span className="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
-                QR
+              <span className="m-2 rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
+                Get QR
               </span>
             </div>
           </div>
@@ -116,7 +148,3 @@ export default function Server() {
     </>
   );
 }
-Server.getInitialProps = async ({ req }) => {
-  const ip = req.headers["x-real-ip"] || req.connection.remoteAddress;
-  return { ip };
-};
