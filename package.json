@@ -12,6 +12,7 @@
     "@vercel/analytics": "^1.0.2",
     "autoprefixer": "10.4.14",
     "browser-cookies": "^1.2.0",
+    "clipboard-copy": "^4.0.1",
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.2",
     "next": "13.4.13",

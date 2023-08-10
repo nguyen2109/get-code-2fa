@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
+import clipboardCopy from "clipboard-copy";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -8,6 +9,7 @@ export default function Server() {
   const [textareaValue, setTextareaValue] = useState("");
   const [jsonResults, setJsonResults] = useState([]);
   const [input, setInput] = useState([]);
+  const [showCopyNotification, setShowCopyNotification] = useState(false);
 
   const getCode = async () => {
     const lines = textareaValue
@@ -15,10 +17,10 @@ export default function Server() {
       .map((line) => line.trim())
       .filter((line) => line !== "");
     setInput(lines);
-    console.log(lines);
     const results = [];
 
-    for (const line of lines) {
+    for (const index in lines) {
+      const line = lines[index];
       try {
         const response = await fetch(`/api/2fa/${encodeURIComponent(line)}`);
         if (response.ok) {
@@ -26,13 +28,17 @@ export default function Server() {
           results.push(data);
         } else {
           console.error("Request failed:", response.status);
+          results.push(null);
         }
       } catch (error) {
         console.error("An error occurred:", error);
+        results.push(null);
+      }
+      setJsonResults([...results]); // Hiển thị kết quả ngay sau mỗi request
+      if (index < lines.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 10)); // 1 second delay
       }
     }
-
-    setJsonResults(results);
   };
 
   const { theme, setTheme } = useTheme();
@@ -114,7 +120,7 @@ export default function Server() {
                 <div className="grid grid-cols-4">
                   <div className="justify-start truncate">{input[index]}</div>
                   <div className="ml-auto">
-                    <span className="dark:text-white text-green-800 bg-green-200 text-sm font-medium rounded-lg bg-opacity-50 p-1.5">
+                    <span className="dark:text-white dark:bg-green-800 text-green-800 bg-green-200 text-sm font-medium rounded-lg bg-opacity-50 p-1.5">
                       {result ? result.token : "ERROR"}
                     </span>
                   </div>
@@ -122,13 +128,30 @@ export default function Server() {
                     <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
                       Get QR
                     </button>
-                    <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
+
+                    <button
+                      onClick={() => {
+                        if (jsonResults[index]) {
+                          clipboardCopy(jsonResults[index].token);
+                          setShowCopyNotification(true);
+                          setTimeout(() => {
+                            setShowCopyNotification(false);
+                          }, 2000); // 2 seconds
+                        }
+                      }}
+                      class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white"
+                    >
                       Copy
                     </button>
                   </div>
                 </div>
               </div>
             ))}
+            {showCopyNotification && (
+              <div className="fixed bottom-0 left-0 right-0 bg-gray-800 bg-opacity-75 p-4 text-white text-center">
+                Copied successfully!
+              </div>
+            )}
           </div>
           <div>
             <div class="m-4 mx-auto rounded-xl bg-white p-2 shadow-lg dark:bg-slate-700">
