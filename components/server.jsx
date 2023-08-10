@@ -45,7 +45,7 @@ export default function Server() {
   };
   useEffect(() => {
     setTheme("light");
-  }, []); // Mảng rỗng [] đảm bảo useEffect chỉ chạy một lần khi component mount
+  }, []);
 
   return (
     <>
