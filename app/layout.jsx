@@ -1,5 +1,6 @@
 import "./../styles/global.css";
 import Providers from "./Providers";
+import { Analytics } from "@vercel/analytics/react";
 export const metadata = {
   title: "Get 2FA Code",
   description: "Get 2FA Code",
@@ -13,7 +14,9 @@ const RootLayout = ({ children }) => {
         </div>
 
         <main className="app">
-          <Providers>{children} </Providers>
+          <Providers>
+            {children} <Analytics />
+          </Providers>
         </main>
       </body>
     </html>
