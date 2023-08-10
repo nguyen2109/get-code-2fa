@@ -1,7 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
+import { useUserIp } from "@/utils/useUserIp";
+
 export default function Server() {
+  const ip = useUserIp();
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     if (theme === "dark") {
@@ -13,7 +16,7 @@ export default function Server() {
   useEffect(() => {
     setTheme("light");
   }, []); // Mảng rỗng [] đảm bảo useEffect chỉ chạy một lần khi component mount
-
+  console.log(ip);
   return (
     <>
       <div class="relative container mx-auto">
@@ -50,6 +53,7 @@ export default function Server() {
           </button>
         </div>
         <div class="mx-auto items-center rounded-xl bg-white p-2 shadow-lg dark:bg-slate-700">
+          <p>Your ip: {ip}</p>
           <p class=" dark:text-white">
             Before Clicking “Get code” enter your 2FA code here.
           </p>
