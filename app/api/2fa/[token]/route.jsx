@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/utils/database";
-import Statics2fa from "@/models/2fa";
+import { connectToDB } from "./../../../../utils/database";
+import Statics2fa from "./../../../../models/2fa";
 import mongoose from "mongoose";
 
 export async function GET(req, { params }) {
