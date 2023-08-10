@@ -1,10 +1,15 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
-import { useUserIp } from "./../utils/useUserIp";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Server() {
-  const ip = useUserIp();
+  const [isHidden, setIsHidden] = useState(true);
+  const toggleHidden = () => {
+    setIsHidden(!isHidden);
+  };
+
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => {
     if (theme === "dark") {
@@ -16,7 +21,7 @@ export default function Server() {
   useEffect(() => {
     setTheme("light");
   }, []); // Mảng rỗng [] đảm bảo useEffect chỉ chạy một lần khi component mount
-  console.log(ip);
+
   return (
     <>
       <div class="relative container mx-auto">
@@ -53,7 +58,6 @@ export default function Server() {
           </button>
         </div>
         <div class="mx-auto items-center rounded-xl bg-white p-2 shadow-lg dark:bg-slate-700">
-          <p>Your ip: {ip}</p>
           <p class=" dark:text-white">
             Before Clicking “Get code” enter your 2FA code here.
           </p>
@@ -65,75 +69,46 @@ export default function Server() {
             class="border-nonemt-1 block w-full rounded-md border border-gray-300 bg-slate-100 py-4 ring-0 dark:bg-slate-500"
             rows="8"
           ></textarea>
-          <button class="my-4 rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
+          <button
+            onClick={toggleHidden}
+            class="my-4 rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
+          >
             GET CODE
           </button>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 space-x-0 sm:space-x-4">
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 sm:space-x-4">
           <div class="col-span-2">
             <div class="m-4 mx-auto items-center rounded-xl bg-white p-2  shadow-lg dark:bg-slate-700">
               <div class="grid grid-cols-4">
-                <div class="justify-start col-span-2">7cng 7luq lhdm 5qjp</div>
-                <div>123456</div>
+                <div class="justify-start truncate ">7cng 7luq lhdm 5qjp</div>
                 <div className="ml-auto">
-                  <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
-                    copy
-                  </button>
+                  <span className=" dark:text-white text-green-800 bg-green-200 text-sm font-medium rounded-lg bg-opacity-50 p-1.5">
+                    123456
+                  </span>
                 </div>
-              </div>
-            </div>
-            <div class="m-4 mx-auto items-center rounded-xl bg-white p-2  shadow-lg dark:bg-slate-700">
-              <div class="grid grid-cols-4">
-                <div class="justify-start col-span-2">7cng 7luq lhdm 5qjp</div>
-                <div>123456</div>
-                <div className="ml-auto">
-                  <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent dark:bg-purple-600 dark:text-white hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
-                    copy
+                <div className="col-span-2 ml-auto">
+                  <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
+                    Get QR
                   </button>
-                </div>
-              </div>
-            </div>
-            <div class="m-4 mx-auto items-center rounded-xl bg-white p-2  shadow-lg dark:bg-slate-700">
-              <div class="grid grid-cols-4">
-                <div class="justify-start col-span-2">7cng 7luq lhdm 5qjp</div>
-                <div>123456</div>
-                <div className="ml-auto">
-                  <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent dark:bg-purple-600 dark:text-white hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
-                    copy
+                  <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
+                    Copy
                   </button>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* <div class="col-span-3 hidden"> Nếu col-span-2 được hidden thì thuộc tính này sẽ đc kích hoạt */}
           <div>
-            <div class="m-4 mx-auto items-center rounded-xl bg-white p-2  shadow-lg dark:bg-slate-700">
+            <div class="m-4 mx-auto rounded-xl bg-white p-2 shadow-lg dark:bg-slate-700">
               <div class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                <h1 class="text-2xl font-bold text-center">History</h1>
+                <h1 class="text-2xl font-bold ">QR CODE</h1>
               </div>
-              <p className="text-center">
-                <span className="bg-slate-200 rounded-lg">192.168.1.1</span> got
-                10 code <span className="text-slate-500 italic ">now</span>
-              </p>
-              <p className="text-center">
-                <span className="bg-slate-200 rounded-lg">192.168.1.1</span> got
-                10 code{" "}
-                <span className="text-slate-500 italic ">30 seconds ago</span>
-              </p>
-              <p className="text-center">
-                <span className="bg-slate-200 rounded-lg">192.168.1.1</span> got
-                10 code{" "}
-                <span className="text-slate-500 italic ">1 minute ago</span>
-              </p>
-              <p className="text-center">
-                <span className="bg-slate-200 rounded-lg">192.168.1.1</span> got
-                10 code{" "}
-                <span className="text-slate-500 italic ">5 hours ago</span>
-              </p>
-              <p className="text-center">
-                <span className="bg-slate-200 rounded-lg">192.168.1.1</span> got
-                10 code{" "}
-                <span className="text-slate-500 italic ">30 seconds ago</span>
-              </p>
+              QR Code is empty! You need to click on button
+              <span className="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
+                QR
+              </span>
             </div>
           </div>
         </div>
@@ -141,3 +116,7 @@ export default function Server() {
     </>
   );
 }
+Server.getInitialProps = async ({ req }) => {
+  const ip = req.headers["x-real-ip"] || req.connection.remoteAddress;
+  return { ip };
+};
