@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
+import QRCode from "react-qr-code";
 import clipboardCopy from "clipboard-copy";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -10,7 +11,7 @@ export default function Server() {
   const [jsonResults, setJsonResults] = useState([]);
   const [input, setInput] = useState([]);
   const [showCopyNotification, setShowCopyNotification] = useState(false);
-
+  const [showQRIndex, setShowQRIndex] = useState(null);
   const getCode = async () => {
     const lines = textareaValue
       .split("\n")
@@ -125,10 +126,12 @@ export default function Server() {
                     </span>
                   </div>
                   <div className="col-span-2 ml-auto">
-                    <button class="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white">
+                    <button
+                      onClick={() => setShowQRIndex(index)} // Lưu chỉ số dòng mở mã QR
+                      className="rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 dark:bg-purple-600 dark:text-white"
+                    >
                       Get QR
                     </button>
-
                     <button
                       onClick={() => {
                         if (jsonResults[index]) {
@@ -154,13 +157,37 @@ export default function Server() {
             )}
           </div>
           <div>
-            <div class="m-4 mx-auto rounded-xl bg-white p-2 shadow-lg dark:bg-slate-700">
+            <div class="m-4 mx-auto rounded-xl bg-transfer p-2  dark:bg-transfer">
               <div class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent">
-                <h1 class="text-2xl font-bold ">QR CODE</h1>
+                <h1 class="text-2xl font-bold text-center ">QR CODE</h1>
               </div>
-              QR Code is empty! You need to click on button
-              <span className="m-2 rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
-                Get QR
+              {showQRIndex !== null &&
+              jsonResults[showQRIndex] &&
+              jsonResults[showQRIndex].token ? (
+                <QRCode
+                  value={input[showQRIndex]}
+                  size={128}
+                  style={{
+                    height: "128",
+                    maxWidth: "100%",
+                    width: "100%",
+                  }}
+                  viewBox={`0 0 256 256`}
+                />
+              ) : null}
+              <span
+                className={
+                  showQRIndex !== null &&
+                  jsonResults[showQRIndex] &&
+                  jsonResults[showQRIndex].token
+                    ? "hidden"
+                    : ""
+                }
+              >
+                QR Code is empty! You need to click on button
+                <span className="m-2 rounded-full border border-purple-200 px-4 py-1 text-sm font-semibold text-purple-600 hover:border-transparent hover:bg-purple-600 dark:bg-purple-600 dark:text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
+                  Get QR
+                </span>
               </span>
             </div>
           </div>
