@@ -16,8 +16,9 @@ export default function Server() {
   const getCode = async () => {
     const lines = textareaValue
       .split("\n")
-      .map((line) => line.trim())
+      .map((line) => line.replace(/\s+/g, "")) // Loại bỏ tất cả khoảng trắng
       .filter((line) => line !== "");
+
     setInput(lines);
     const results = [];
 
