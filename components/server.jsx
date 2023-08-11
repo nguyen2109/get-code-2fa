@@ -5,6 +5,7 @@ import QRCode from "react-qr-code";
 import clipboardCopy from "clipboard-copy";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import GitHubButton from "react-github-btn";
 
 export default function Server() {
   const [textareaValue, setTextareaValue] = useState("");
@@ -90,6 +91,28 @@ export default function Server() {
           </button>
         </div>
         <div class="mx-auto items-center rounded-xl bg-white p-2 shadow-lg dark:bg-slate-700">
+          <p class=" dark:text-white italic text-slate-500">
+            Follow and give me a star! Thank you 💖
+          </p>
+          <GitHubButton
+            href="https://github.com/nguyen2109"
+            data-color-scheme="no-preference: light; light: dark_high_contrast; dark: dark_high_contrast;"
+            data-size="large"
+            data-show-count="true"
+            aria-label="Follow @nguyen2109 on GitHub"
+          >
+            Follow @nguyen2109
+          </GitHubButton>
+          <GitHubButton
+            href="https://github.com/nguyen2109/get-code-2fa"
+            data-color-scheme="no-preference: light; light: dark_high_contrast; dark: dark_high_contrast;"
+            data-size="large"
+            data-show-count="true"
+            aria-label="Star nguyen2109/get-code-2fa on GitHub"
+          >
+            Star
+          </GitHubButton>
+
           <p class=" dark:text-white">
             Before Clicking “Get code” enter your 2FA code here.
           </p>
@@ -97,6 +120,7 @@ export default function Server() {
             * <b>2FA Secret</b> Get code for 2 factor authentication easiest -
             Please store your 2FA secret safely
           </p>
+
           <textarea
             class="border-nonemt-1 block w-full rounded-md border border-gray-300 bg-slate-100 py-4 ring-0 dark:bg-slate-500"
             rows="8"
